@@ -1,0 +1,11 @@
+{
+  "id": "daily-todo-inline",
+  "name": "Daily Todo Panel",
+  "version": "1.0.0",
+  "minAppVersion": "1.5.0",
+  "description": "Keep a daily checklist inside your vault. Rolls over unfinished tasks, pulls open items from your work log, and checks them off from a side panel.",
+  "author": "shuishuishui018",
+  "authorUrl": "https://github.com/shuishuishui018",
+  "fundingUrl": "https://github.com/shuishuishui018/obsidian-daily-todo#support",
+  "isDesktopOnly": false
+}

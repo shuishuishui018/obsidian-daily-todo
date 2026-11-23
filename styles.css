@@ -1,0 +1,213 @@
+/* 每日待办面板 —— 全部使用 Obsidian 主题变量，自动适配明暗主题 */
+
+.dtp-root {
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  overflow: hidden;
+}
+
+.dtp-header {
+  padding: 14px 14px 8px;
+  border-bottom: 1px solid var(--background-modifier-border);
+  flex: 0 0 auto;
+}
+
+.dtp-title-row {
+  display: flex;
+  align-items: baseline;
+  gap: 8px;
+}
+
+.dtp-date {
+  font-size: 1.15em;
+  font-weight: 600;
+  color: var(--text-normal);
+}
+
+.dtp-weekday {
+  font-size: 0.85em;
+  color: var(--text-muted);
+}
+
+.dtp-actions {
+  margin-left: auto;
+  display: flex;
+  gap: 2px;
+}
+
+.dtp-icon-btn {
+  background: transparent;
+  border: none;
+  box-shadow: none;
+  padding: 4px;
+  border-radius: var(--radius-s, 4px);
+  color: var(--text-muted);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+}
+
+.dtp-icon-btn:hover {
+  background: var(--background-modifier-hover);
+  color: var(--text-normal);
+}
+
+.dtp-icon-btn svg {
+  width: 16px;
+  height: 16px;
+}
+
+.dtp-stats {
+  display: flex;
+  gap: 10px;
+  margin-top: 6px;
+  font-size: 0.8em;
+}
+
+.dtp-stat-pending {
+  color: var(--interactive-accent);
+}
+
+.dtp-stat-done {
+  color: var(--text-faint);
+}
+
+.dtp-body {
+  flex: 1 1 auto;
+  overflow-y: auto;
+  padding: 8px 10px 16px;
+}
+
+.dtp-section {
+  margin-bottom: 14px;
+}
+
+.dtp-section-label {
+  font-size: 0.75em;
+  letter-spacing: 0.04em;
+  color: var(--text-faint);
+  margin: 6px 4px;
+}
+
+.dtp-item {
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+  padding: 7px 6px;
+  border-radius: var(--radius-s, 6px);
+}
+
+.dtp-item:hover {
+  background: var(--background-modifier-hover);
+}
+
+.dtp-check {
+  margin-top: 2px;
+  flex: 0 0 auto;
+  accent-color: var(--interactive-accent);
+  cursor: pointer;
+}
+
+.dtp-item-main {
+  flex: 1 1 auto;
+  min-width: 0;
+}
+
+.dtp-text {
+  color: var(--text-normal);
+  font-size: 0.95em;
+  line-height: 1.45;
+  overflow-wrap: anywhere;
+}
+
+.dtp-item.is-done .dtp-text {
+  color: var(--text-faint);
+  text-decoration: line-through;
+}
+
+.dtp-item-meta {
+  display: flex;
+  gap: 6px;
+  flex: 0 0 auto;
+  align-items: center;
+}
+
+.dtp-due {
+  font-size: 0.72em;
+  color: var(--text-faint);
+  background: var(--background-secondary);
+  border-radius: 999px;
+  padding: 1px 7px;
+  white-space: nowrap;
+}
+
+.dtp-due.is-today {
+  color: var(--text-on-accent);
+  background: var(--interactive-accent);
+}
+
+.dtp-due.is-overdue {
+  color: var(--text-error, #d64545);
+  background: var(--background-modifier-error, rgba(214, 69, 69, 0.12));
+}
+
+.dtp-more {
+  opacity: 0;
+  transition: opacity 0.12s ease;
+}
+
+.dtp-item:hover .dtp-more,
+.dtp-root .dtp-more:focus {
+  opacity: 1;
+}
+
+.dtp-empty {
+  padding: 24px 8px;
+  text-align: center;
+}
+
+.dtp-empty-title {
+  color: var(--text-normal);
+  font-size: 0.95em;
+  margin-bottom: 6px;
+}
+
+.dtp-empty-hint {
+  color: var(--text-muted);
+  font-size: 0.82em;
+  line-height: 1.6;
+}
+
+.dtp-add {
+  flex: 0 0 auto;
+  display: flex;
+  gap: 6px;
+  padding: 8px 10px 10px;
+  border-top: 1px solid var(--background-modifier-border);
+}
+
+.dtp-add-input {
+  flex: 1 1 auto;
+  font-size: 0.9em;
+}
+
+.dtp-add-btn {
+  flex: 0 0 auto;
+  font-size: 0.85em;
+  padding: 4px 10px;
+}
+
+/* 手机端：面板较窄，压缩留白、常显操作按钮 */
+.is-mobile .dtp-header {
+  padding: 10px 10px 6px;
+}
+
+.is-mobile .dtp-body {
+  padding: 6px 6px 14px;
+}
+
+.is-mobile .dtp-more {
+  opacity: 0.65;
+}

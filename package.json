@@ -1,0 +1,23 @@
+{
+  "name": "obsidian-daily-todo",
+  "version": "1.0.0",
+  "description": "Daily todo panel plugin for Obsidian",
+  "main": "main.js",
+  "scripts": {
+    "dev": "node esbuild.config.mjs",
+    "build": "node esbuild.config.mjs production",
+    "typecheck": "tsc -noEmit -skipLibCheck"
+  },
+  "keywords": [
+    "obsidian",
+    "todo",
+    "daily"
+  ],
+  "author": "shuishuishui018",
+  "license": "MIT",
+  "devDependencies": {
+    "esbuild": "^0.28.2",
+    "obsidian": "^1.14.4",
+    "typescript": "^7.0.2"
+  }
+}

@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8" />
+<title>Daily Todo Panel — preview</title>
+<link rel="stylesheet" href="../styles.css" />
+<style>
+  :root {
+    --background-primary: #ffffff;
+    --background-secondary: #f7f7f8;
+    --background-modifier-border: #e6e6e8;
+    --background-modifier-hover: rgba(0, 0, 0, 0.045);
+    --background-modifier-error: rgba(198, 66, 66, 0.1);
+    --text-normal: #2e3338;
+    --text-muted: #63676d;
+    --text-faint: #a1a5ab;
+    --text-on-accent: #ffffff;
+    --text-error: #c64242;
+    --interactive-accent: #7b5cf0;
+    --radius-s: 6px;
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html, body {
+    width: 1024px; height: 768px; overflow: hidden;
+    background: var(--background-primary);
+    color: var(--text-normal);
+    font-family: -apple-system, "Segoe UI", "Microsoft YaHei", system-ui, sans-serif;
+    font-size: 14px;
+    -webkit-font-smoothing: antialiased;
+  }
+  .workspace { display: flex; height: 768px; }
+
+  /* 左侧图标栏 */
+  .ribbon {
+    width: 44px; flex: 0 0 44px; background: var(--background-secondary);
+    border-right: 1px solid var(--background-modifier-border);
+    display: flex; flex-direction: column; align-items: center;
+    padding: 12px 0; gap: 14px;
+  }
+  .ribbon .ico { width: 18px; height: 18px; color: var(--text-faint); }
+  .ribbon .ico.on { color: var(--interactive-accent); }
+
+  /* 文件列表 */
+  .explorer {
+    width: 226px; flex: 0 0 226px;
+    background: var(--background-secondary);
+    border-right: 1px solid var(--background-modifier-border);
+    padding: 10px 8px;
+  }
+  .vault-row {
+    display: flex; align-items: center; gap: 6px;
+    padding: 6px 6px 12px; font-size: 12px; color: var(--text-faint);
+  }
+  .folder { display: flex; align-items: center; gap: 6px; padding: 5px 8px; border-radius: 5px; font-size: 13px; color: var(--text-muted); }
+  .folder .chev { width: 10px; height: 10px; color: var(--text-faint); }
+  .file { display: flex; align-items: center; gap: 7px; padding: 5px 8px 5px 26px; border-radius: 5px; font-size: 13px; color: var(--text-muted); }
+  .file.active { background: rgba(123, 92, 240, 0.11); color: var(--text-normal); font-weight: 600; }
+  .file .ic { width: 13px; height: 13px; color: var(--text-faint); }
+
+  /* 编辑器 */
+  .editor { flex: 1 1 auto; min-width: 0; padding: 26px 34px; overflow: hidden; }
+  .editor .crumb { font-size: 12px; color: var(--text-faint); margin-bottom: 18px; }
+  .editor h1 { font-size: 26px; font-weight: 700; letter-spacing: -0.3px; margin-bottom: 16px; }
+  .md-task { display: flex; align-items: flex-start; gap: 9px; padding: 5px 0; font-size: 15px; line-height: 1.6; }
+  .md-box {
+    width: 15px; height: 15px; flex: 0 0 15px; margin-top: 4px;
+    border: 1.6px solid #b9bcc2; border-radius: 3px; position: relative;
+  }
+  .md-box.on { background: var(--interactive-accent); border-color: var(--interactive-accent); }
+  .md-box.on::after {
+    content: ''; position: absolute; left: 3.6px; top: 0.6px;
+    width: 4px; height: 8px; border-right: 1.7px solid #fff; border-bottom: 1.7px solid #fff;
+    transform: rotate(42deg);
+  }
+  .md-task.done span { color: var(--text-faint); text-decoration: line-through; }
+  .md-task code {
+    font-family: "Cascadia Mono", Consolas, monospace; font-size: 12px;
+    background: var(--background-secondary); border-radius: 4px; padding: 1px 5px; color: #b4532a;
+  }
+
+  /* 右侧面板 */
+  .sidebar-right {
+    width: 300px; flex: 0 0 300px; display: flex; flex-direction: column;
+    border-left: 1px solid var(--background-modifier-border);
+    background: var(--background-primary);
+  }
+  .sidebar-tabs {
+    display: flex; align-items: center; gap: 8px; padding: 8px 12px;
+    border-bottom: 1px solid var(--background-modifier-border);
+    font-size: 12px; color: var(--text-muted); flex: 0 0 auto;
+  }
+  .sidebar-tabs .tab { display: flex; align-items: center; gap: 5px; }
+  .sidebar-tabs .tab svg { width: 13px; height: 13px; color: var(--interactive-accent); }
+  .sidebar-tabs .tab.on { color: var(--text-normal); font-weight: 600; }
+  .sidebar-tabs .spacer { margin-left: auto; display: flex; gap: 10px; color: var(--text-faint); }
+  .sidebar-tabs .spacer svg { width: 13px; height: 13px; }
+  .panel-host { flex: 1 1 auto; min-height: 0; display: flex; flex-direction: column; }
+  .dtp-root { flex: 1 1 auto; }
+</style>
+</head>
+<body>
+<div class="workspace">
+  <div class="ribbon">
+    <svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M4 5.5A1.5 1.5 0 015.5 4h4l2 2h7A1.5 1.5 0 0120 7.5v10A1.5 1.5 0 0118.5 19h-13A1.5 1.5 0 014 17.5v-12z"/></svg>
+    <svg class="ico on" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M4 7h10M4 12h10M4 17h6"/><path d="M16 15.5l2.2 2.2L22 14"/></svg>
+    <svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><circle cx="11" cy="11" r="6.5"/><path d="M16 16l4 4"/></svg>
+    <svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M12 3v18M3 12h18"/></svg>
+  </div>
+
+  <div class="explorer">
+    <div class="vault-row">
+      <svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M4 6h6l2 2h8v10H4z"/></svg>
+      vault
+    </div>
+    <div class="folder"><svg class="chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M9 6l6 6-6 6"/></svg>工作日志</div>
+    <div class="folder"><svg class="chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M9 6l6 6-6 6"/></svg>每日待办</div>
+    <div class="file"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M7 3h7l4 4v14H7z"/><path d="M14 3v4h4"/></svg>2026-11-22</div>
+    <div class="file active"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M7 3h7l4 4v14H7z"/><path d="M14 3v4h4"/></svg>2026-11-23</div>
+  </div>
+
+  <div class="editor">
+    <div class="crumb">每日待办 / 2026-11-23</div>
+    <h1>2026-11-23 星期一</h1>
+    <div class="md-task done"><div class="md-box on"></div><span>整理上周会议纪要</span></div>
+    <div class="md-task"><div class="md-box"></div><span>回复客户关于交付时间的邮件</span></div>
+    <div class="md-task"><div class="md-box"></div><span>提交本周周报 <code>@2026-11-25</code></span></div>
+    <div class="md-task"><div class="md-box"></div><span>更新项目进度表</span></div>
+  </div>
+
+  <div class="sidebar-right">
+    <div class="sidebar-tabs">
+      <span class="tab on">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M4 7h10M4 12h10M4 17h6"/><path d="M16 15.5l2.2 2.2L22 14"/></svg>
+        每日待办
+      </span>
+      <span class="spacer">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9l6 6 6-6"/></svg>
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M6 6l12 12M18 6L6 18"/></svg>
+      </span>
+    </div>
+
+    <div class="panel-host">
+      <div class="dtp-root">
+        <div class="dtp-header">
+          <div class="dtp-title-row">
+            <div class="dtp-date">2026-11-23</div>
+            <div class="dtp-weekday">星期一</div>
+            <div class="dtp-actions">
+              <button class="dtp-icon-btn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" width="16" height="16"><path d="M4 13h4l1.5 2.5h5L16 13h4"/><path d="M4 13V7h16v6"/><path d="M4 13v5h16v-5"/></svg></button>
+              <button class="dtp-icon-btn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" width="16" height="16"><path d="M4 8h13l-3-3M20 16H7l3 3"/></svg></button>
+            </div>
+          </div>
+          <div class="dtp-stats">
+            <span class="dtp-stat-pending">2 待办</span>
+            <span class="dtp-stat-done">1 已完成</span>
+          </div>
+        </div>
+
+        <div class="dtp-body">
+          <div class="dtp-section">
+            <div class="dtp-item">
+              <input type="checkbox" class="dtp-check" />
+              <div class="dtp-item-main"><div class="dtp-text">回复客户关于交付时间的邮件</div></div>
+              <div class="dtp-item-meta"></div>
+              <button class="dtp-icon-btn dtp-more"><svg viewBox="0 0 24 24" fill="currentColor" width="16" height="16"><circle cx="6" cy="12" r="1.6"/><circle cx="12" cy="12" r="1.6"/><circle cx="18" cy="12" r="1.6"/></svg></button>
+            </div>
+            <div class="dtp-item">
+              <input type="checkbox" class="dtp-check" />
+              <div class="dtp-item-main"><div class="dtp-text">更新项目进度表</div></div>
+              <div class="dtp-item-meta"></div>
+              <button class="dtp-icon-btn dtp-more"><svg viewBox="0 0 24 24" fill="currentColor" width="16" height="16"><circle cx="6" cy="12" r="1.6"/><circle cx="12" cy="12" r="1.6"/><circle cx="18" cy="12" r="1.6"/></svg></button>
+            </div>
+          </div>
+
+          <div class="dtp-section">
+            <div class="dtp-section-label">排队中</div>
+            <div class="dtp-item">
+              <input type="checkbox" class="dtp-check" />
+              <div class="dtp-item-main"><div class="dtp-text">提交本周周报</div></div>
+              <div class="dtp-item-meta"><span class="dtp-due">2026-11-25</span></div>
+              <button class="dtp-icon-btn dtp-more"><svg viewBox="0 0 24 24" fill="currentColor" width="16" height="16"><circle cx="6" cy="12" r="1.6"/><circle cx="12" cy="12" r="1.6"/><circle cx="18" cy="12" r="1.6"/></svg></button>
+            </div>
+          </div>
+
+          <div class="dtp-section">
+            <div class="dtp-section-label">已完成</div>
+            <div class="dtp-item is-done">
+              <input type="checkbox" class="dtp-check" checked />
+              <div class="dtp-item-main"><div class="dtp-text">整理上周会议纪要</div></div>
+              <div class="dtp-item-meta"></div>
+              <button class="dtp-icon-btn dtp-more"><svg viewBox="0 0 24 24" fill="currentColor" width="16" height="16"><circle cx="6" cy="12" r="1.6"/><circle cx="12" cy="12" r="1.6"/><circle cx="18" cy="12" r="1.6"/></svg></button>
+            </div>
+          </div>
+        </div>
+
+        <div class="dtp-add">
+          <input type="text" class="dtp-add-input" placeholder="添加一条任务…" />
+          <button class="dtp-add-btn">添加</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+</body>
+</html>
